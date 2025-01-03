@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="sr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Provera Pravopisa sa BST</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      .container {
+        max-width: 600px;
+        margin-top: 50px;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      #result {
+        margin-top: 20px;
+      }
+      .spinner-border {
+        width: 3rem;
+        height: 3rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="text-center mb-4">Provera Pravopisa sa BST</h1>
+
+      <div class="mb-3">
+        <label for="wordInput" class="form-label"
+          >Unesite reč za proveru:</label
+        >
+        <div class="input-group">
+          <input
+            type="text"
+            id="wordInput"
+            class="form-control"
+            placeholder="npr. jabuka"
+            aria-label="Reč za proveru"
+          />
+          <button id="checkBtn" class="btn btn-primary">Proveri</button>
+        </div>
+      </div>
+
+      <div id="result" class="alert d-none" role="alert">
+        <!-- Rezultati će se prikazati ovde -->
+      </div>
+
+      <div id="loading" class="text-center d-none">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Učitavanje...</span>
+        </div>
+        <p>Provera reči...</p>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS i zavisnosti (Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script>
+      const checkBtn = document.getElementById("checkBtn");
+      const wordInput = document.getElementById("wordInput");
+      const resultDiv = document.getElementById("result");
+      const loadingDiv = document.getElementById("loading");
+
+      checkBtn.addEventListener("click", async () => {
+        const word = wordInput.value.trim();
+        const validWordRegex = /^[a-zA-ZČčĆćŽžŠšĐđ]+$/;
+
+        // Resetovanje prethodnih rezultata
+        resultDiv.classList.add(
+          "d-none",
+          "alert-success",
+          "alert-danger",
+          "alert-warning"
+        );
+        resultDiv.textContent = "";
+
+        if (!validWordRegex.test(word)) {
+          resultDiv.classList.remove("d-none");
+          resultDiv.classList.add("alert-warning");
+          resultDiv.textContent = "Molimo vas da unesete validnu reč.";
+          return;
+        }
+
+        // Prikazivanje indikatora učitavanja
+        loadingDiv.classList.remove("d-none");
+
+        try {
+          const response = await fetch(
+            `/check?word=${encodeURIComponent(word)}`
+          );
+          const data = await response.json();
+
+          loadingDiv.classList.add("d-none");
+
+          resultDiv.classList.remove(
+            "alert-success",
+            "alert-danger",
+            "alert-warning"
+          );
+
+          if (data.error) {
+            resultDiv.classList.remove("d-none");
+            resultDiv.classList.add("alert-danger");
+            resultDiv.textContent = data.error;
+          } else if (data.found) {
+            resultDiv.classList.remove("d-none");
+            resultDiv.classList.add("alert-success");
+            resultDiv.innerHTML = `<strong>'${word}'</strong> je <span class="text-success">pronađena</span> u rečniku.`;
+          } else {
+            resultDiv.classList.remove("d-none");
+            resultDiv.classList.add("alert-danger");
+            if (data.suggestion) {
+              resultDiv.innerHTML = `<strong>'${word}'</strong> <span class="text-danger">nije pronađena</span> u rečniku.<br>Predlog: <strong>'${data.suggestion}'</strong>`;
+            } else {
+              resultDiv.innerHTML = `<strong>'${word}'</strong> <span class="text-danger">nije pronađena</span> u rečniku.<br>Nema dostupnih predloga.`;
+            }
+          }
+        } catch (error) {
+          loadingDiv.classList.add("d-none");
+
+          console.error(error);
+          resultDiv.classList.remove("d-none");
+          resultDiv.classList.add("alert-danger");
+          resultDiv.textContent =
+            "Došlo je do greške prilikom provere reči. Molimo pokušajte ponovo.";
+        }
+      });
+
+      wordInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          checkBtn.click();
+        }
+      });
+    </script>
+  </body>
+</html>
