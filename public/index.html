@@ -2,7 +2,7 @@
 <html lang="sr">
   <head>
     <meta charset="UTF-8" />
-    <title>Provera Pravopisa sa BST</title>
+    <title>Provera Pravopisa sa BST i Huffmanom</title>
     <!-- Bootstrap CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -31,7 +31,7 @@
   </head>
   <body>
     <div class="container">
-      <h1 class="text-center mb-4">Provera Pravopisa sa BST</h1>
+      <h1 class="text-center mb-4">Provera Pravopisa sa BST i Huffmanom</h1>
 
       <div class="mb-3">
         <label for="wordInput" class="form-label"
@@ -45,6 +45,12 @@
             placeholder="npr. jabuka"
             aria-label="Reč za proveru"
           />
+
+          <select id="algorithmSelect" class="form-select">
+            <option value="bst" selected>Binarno stablo pretrage</option>
+            <option value="huffman">Huffmanov algoritam</option>
+          </select>
+
           <button id="checkBtn" class="btn btn-primary">Proveri</button>
         </div>
       </div>
@@ -67,14 +73,16 @@
     <script>
       const checkBtn = document.getElementById("checkBtn");
       const wordInput = document.getElementById("wordInput");
+      const algorithmSelect = document.getElementById("algorithmSelect");
       const resultDiv = document.getElementById("result");
       const loadingDiv = document.getElementById("loading");
 
       checkBtn.addEventListener("click", async () => {
         const word = wordInput.value.trim();
+        const algorithm = algorithmSelect.value;
+
         const validWordRegex = /^[a-zA-ZČčĆćŽžŠšĐđ]+$/;
 
-        // Resetovanje prethodnih rezultata
         resultDiv.classList.add(
           "d-none",
           "alert-success",
@@ -90,12 +98,11 @@
           return;
         }
 
-        // Prikazivanje indikatora učitavanja
         loadingDiv.classList.remove("d-none");
 
         try {
           const response = await fetch(
-            `/check?word=${encodeURIComponent(word)}`
+            `/check?word=${encodeURIComponent(word)}&algorithm=${algorithm}`
           );
           const data = await response.json();
 

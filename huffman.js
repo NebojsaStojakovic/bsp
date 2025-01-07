@@ -1,4 +1,3 @@
-// Klasni čvor za Huffman stablo
 class HuffmanNode {
   constructor(value, frequency) {
     this.value = value;
@@ -8,7 +7,6 @@ class HuffmanNode {
   }
 }
 
-// Kreiranje Huffmanovog stabla
 function buildHuffmanTree(frequencies) {
   const heap = Object.entries(frequencies).map(
     ([value, freq]) => new HuffmanNode(value, freq)
@@ -30,5 +28,29 @@ function buildHuffmanTree(frequencies) {
   return heap[0];
 }
 
-const huffmanTree = buildHuffmanTree(wordFrequencies);
-console.log("Huffman Stablo:", huffmanTree);
+function generateHuffmanCodes(root, prefix = "", codes = {}) {
+  if (root === null) return codes;
+
+  if (root.value !== null) {
+    codes[root.value] = prefix;
+  }
+
+  generateHuffmanCodes(root.left, prefix + "0", codes);
+  generateHuffmanCodes(root.right, prefix + "1", codes);
+
+  return codes;
+}
+
+function calculateFrequencies(words) {
+  const frequencies = {};
+  words.forEach((word) => {
+    frequencies[word] = (frequencies[word] || 0) + 1;
+  });
+  return frequencies;
+}
+
+module.exports = {
+  buildHuffmanTree,
+  generateHuffmanCodes,
+  calculateFrequencies,
+};
