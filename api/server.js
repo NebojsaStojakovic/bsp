@@ -14,14 +14,6 @@ function readFileLines(filename) {
 
 const app = express();
 
-// Napravite apsolutnu putanju do fajla "dictionary.txt"
-const dictionaryPath = path.join(__dirname, "dictionary.txt");
-
-if (!fs.existsSync(dictionaryPath)) {
-  console.error(`Dictionary file not found at ${dictionaryPath}`);
-  process.exit(1); // Zaustavite ako fajl ne postoji
-}
-
 const words = readFileLines("dictionary.txt");
 const root = buildTree(words.sort());
 
@@ -38,9 +30,6 @@ app.get("/check", (req, res) => {
   res.json(result);
 });
 
-app.get("/", (req, res) => res.send("Express on Vercel"));
-
-// app.listen(3000, () => {
-//   console.log("Server running at http://localhost:3000");
-// });
-module.exports = app;
+app.listen(3000, () => {
+  console.log("Server running at http://localhost:3000");
+});
