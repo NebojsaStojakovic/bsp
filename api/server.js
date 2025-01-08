@@ -14,6 +14,14 @@ function readFileLines(filename) {
 
 const app = express();
 
+// Napravite apsolutnu putanju do fajla "dictionary.txt"
+const dictionaryPath = path.join(__dirname, "dictionary.txt");
+
+if (!fs.existsSync(dictionaryPath)) {
+  console.error(`Dictionary file not found at ${dictionaryPath}`);
+  process.exit(1); // Zaustavite ako fajl ne postoji
+}
+
 const words = readFileLines("dictionary.txt");
 const root = buildTree(words.sort());
 
