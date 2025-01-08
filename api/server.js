@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
-const { buildTree, findWord } = require("./bst");
+const { buildTree, findWord } = require("../bst");
 
 function readFileLines(filename) {
   return fs
@@ -32,6 +32,7 @@ app.get("/check", (req, res) => {
 
 app.get("/", (req, res) => res.send("Express on Vercel"));
 
-app.listen(3000, () => {
-  console.log("Server running at http://localhost:3000");
-});
+// app.listen(3000, () => {
+//   console.log("Server running at http://localhost:3000");
+// });
+module.exports = app;
