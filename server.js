@@ -30,6 +30,8 @@ app.get("/check", (req, res) => {
   res.json(result);
 });
 
+app.get("/", (req, res) => res.send("Express on Vercel"));
+
 app.listen(3000, () => {
   console.log("Server running at http://localhost:3000");
 });
