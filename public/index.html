@@ -71,10 +71,21 @@
       const resultDiv = document.getElementById("result");
       const loadingDiv = document.getElementById("loading");
 
+      wordInput.addEventListener("input", function () {
+        const word = wordInput.value.trim();
+        if (word === "") {
+          resultDiv.classList.add("d-none");
+          resultDiv.classList.remove(
+            "alert-warning",
+            "alert-danger",
+            "alert-success"
+          );
+          resultDiv.textContent = "";
+        }
+      });
+
       checkBtn.addEventListener("click", async () => {
         const word = wordInput.value.trim();
-        console.log(word);
-
         const validWordRegex = /^[a-zA-ZČčĆćŽžŠšĐđ]+$/;
 
         resultDiv.classList.add(
@@ -89,6 +100,11 @@
           resultDiv.classList.remove("d-none");
           resultDiv.classList.add("alert-warning");
           resultDiv.textContent = "Molimo vas da unesete validnu reč.";
+          return;
+        }
+
+        if (word === "") {
+          resultDiv.classList.add("d-none");
           return;
         }
 
